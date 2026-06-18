@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>SIRAJ – Micro PV Digital Twin Prototype (A. Alamri)</title>
+  <title>SunScale – Solar Performance Estimator</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+
   <style>
     * {
       box-sizing: border-box;
@@ -16,18 +17,26 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      background: radial-gradient(circle at top, #121826 0, #050816 55%);
       color: #f9fafb;
+
+      /* لو عندك صورة خلفية باسم solar-bg.jpg */
+      background:
+  linear-gradient(rgba(5, 8, 22, 0.55), rgba(5, 8, 22, 0.60)),
+  url("background.png");
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
     }
 
     .card {
-      background: rgba(15, 23, 42, 0.9);
+      background: rgba(15, 23, 42, 0.92);
       border-radius: 18px;
       border: 1px solid rgba(148, 163, 184, 0.4);
       box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
       padding: 24px 26px;
       max-width: 980px;
       width: 100%;
+      margin: 18px;
     }
 
     .header {
@@ -40,26 +49,39 @@
 
     .title-block h1 {
       margin: 0;
-      font-size: 1.6rem;
-      letter-spacing: 0.05em;
+      font-size: 1.8rem;
+      letter-spacing: 0.04em;
       text-transform: uppercase;
       color: #e5e7eb;
     }
 
+    .title-block h1 span {
+      color: #84cc16;
+    }
+
     .subtitle {
-      margin: 4px 0 0;
-      font-size: 0.9rem;
-      color: #9ca3af;
+      margin: 6px 0 0;
+      font-size: 0.92rem;
+      color: #cbd5e1;
+      line-height: 1.6;
+      max-width: 650px;
     }
 
     .tag {
-      padding: 4px 10px;
+      padding: 6px 12px;
       border-radius: 999px;
       border: 1px solid rgba(190, 242, 100, 0.5);
       font-size: 0.75rem;
       color: #bbf7d0;
-      background: linear-gradient(to right, rgba(34, 197, 94, 0.15), rgba(132, 204, 22, 0.05));
+      background: linear-gradient(to right, rgba(34, 197, 94, 0.18), rgba(132, 204, 22, 0.08));
       white-space: nowrap;
+    }
+
+    .vision {
+      margin-top: 10px;
+      font-size: 0.82rem;
+      color: #a3e635;
+      font-weight: 600;
     }
 
     .grid {
@@ -102,7 +124,8 @@
       margin-bottom: 10px;
     }
 
-    input[type="number"], select {
+    input[type="number"],
+    select {
       width: 100%;
       padding: 7px 9px;
       border-radius: 8px;
@@ -113,13 +136,15 @@
       outline: none;
     }
 
-    input[type="number"]:focus, select:focus {
+    input[type="number"]:focus,
+    select:focus {
       border-color: #22c55e;
       box-shadow: 0 0 0 1px rgba(34, 197, 94, 0.3);
     }
 
     input[type="range"] {
       width: 100%;
+      accent-color: #22c55e;
     }
 
     .inline-row {
@@ -135,14 +160,14 @@
     }
 
     button {
-      padding: 7px 14px;
+      padding: 8px 16px;
       border-radius: 999px;
       border: none;
       font-size: 0.85rem;
       cursor: pointer;
       background: linear-gradient(to right, #22c55e, #a3e635);
       color: #052e16;
-      font-weight: 600;
+      font-weight: 700;
       box-shadow: 0 10px 25px rgba(22, 163, 74, 0.4);
       transition: transform 0.08s ease, box-shadow 0.08s ease;
     }
@@ -150,11 +175,6 @@
     button:hover {
       transform: translateY(-1px);
       box-shadow: 0 12px 32px rgba(22, 163, 74, 0.55);
-    }
-
-    button:active {
-      transform: translateY(0);
-      box-shadow: 0 6px 18px rgba(22, 163, 74, 0.35);
     }
 
     .results-grid {
@@ -195,13 +215,25 @@
       font-size: 0.7rem;
       color: #9ca3af;
       margin-top: 2px;
+      line-height: 1.4;
     }
 
     .explain {
       margin-top: 10px;
       font-size: 0.78rem;
-      color: #9ca3af;
-      line-height: 1.45;
+      color: #cbd5e1;
+      line-height: 1.6;
+    }
+
+    .vision-box {
+      margin-top: 12px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: rgba(34, 197, 94, 0.1);
+      border: 1px solid rgba(34, 197, 94, 0.25);
+      color: #bbf7d0;
+      font-size: 0.78rem;
+      line-height: 1.5;
     }
 
     .pill-row {
@@ -221,52 +253,65 @@
     }
 
     .footer-note {
-      margin-top: 10px;
+      margin-top: 12px;
       font-size: 0.7rem;
-      color: #6b7280;
+      color: #9ca3af;
       text-align: right;
     }
 
     @media (max-width: 768px) {
-      .card {
-        margin: 16px;
-      }
       .grid {
         grid-template-columns: minmax(0, 1fr);
       }
+
       .header {
         flex-direction: column;
         align-items: flex-start;
       }
+
+      .inline-row,
       .results-grid {
         grid-template-columns: minmax(0, 1fr);
       }
-      .footer-note {
-        text-align: left;
+
+  .footer-note {
+  margin-top: 12px;
+  font-size: 0.7rem;
+  color: #9ca3af;
+  text-align: left !important;
+  width: 100%;
+  padding-left: 0;
+}
+
+      .title-block h1 {
+        font-size: 1.45rem;
       }
     }
   </style>
 </head>
+
 <body>
   <div class="card">
     <div class="header">
       <div class="title-block">
-        <h1>SIRAJ – Micro PV Digital Twin</h1>
+        <h1><span>Sun</span>Scale</h1>
         <p class="subtitle">
-          Interactive prototype to demonstrate how SIRAJ converts solar irradiance and system parameters
-          into DC & AC power using a simplified physical model.
+          A solar performance estimation tool that helps users calculate expected photovoltaic system output using panel specifications, irradiance, system losses, and inverter efficiency.
         </p>
+        <div class="vision">
+          Supporting renewable energy awareness in alignment with Saudi Vision 2030.
+        </div>
       </div>
+
       <div class="tag">
-        Validation Prototype · Aseel Alamri
+        Solar Energy Tool · Aseel Alamri
       </div>
     </div>
 
     <div class="grid">
-      <!-- INPUTS PANEL -->
       <div class="panel">
         <h2>Simulation Inputs</h2>
-        <small>Choose a site and tweak the PV system configuration.</small>
+        <small>Choose a site and adjust the PV system configuration.</small>
 
         <div class="field">
           <label for="location">Location (for typical sun hours)</label>
@@ -283,6 +328,7 @@
             <label for="panels">Number of Panels</label>
             <input type="number" id="panels" min="1" value="10">
           </div>
+
           <div class="field">
             <label for="panelWp">Panel Power (Wp)</label>
             <input type="number" id="panelWp" min="50" value="400">
@@ -294,6 +340,7 @@
             <label for="irradiance">Plane-of-array Irradiance G (W/m²)</label>
             <input type="number" id="irradiance" min="50" max="1200" value="800">
           </div>
+
           <div class="field">
             <label for="sunHours">Effective Sun Hours (h/day)</label>
             <input type="number" id="sunHours" min="1" max="10" step="0.1" value="5.5">
@@ -313,17 +360,16 @@
         </div>
 
         <div class="btn-row">
-          <button id="simulateBtn">Run Micro Simulation</button>
+          <button id="simulateBtn">Run Simulation</button>
         </div>
 
         <div class="pill-row">
           <span class="pill">P<sub>DC</sub> ∝ N × P<sub>wp</sub> × G / 1000</span>
           <span class="pill">Losses & Inverter modeled explicitly</span>
-          <span class="pill">Intended for concept demo (SIRAJ)</span>
+          <span class="pill">Sustainable Energy Awareness</span>
         </div>
       </div>
 
-      <!-- OUTPUTS PANEL -->
       <div class="panel">
         <h2>Results & Physical Interpretation</h2>
         <small>All values are instantaneous powers except daily energy.</small>
@@ -367,13 +413,15 @@
         </div>
 
         <div class="explain" id="explainText">
-          Adjust the inputs on the left and click “Run Micro Simulation” to see how SIRAJ’s
-          Digital Twin concept transforms irradiance and basic system parameters into DC & AC
-          power. This prototype uses a simplified PVWatts-style model for quick validation.
+          Adjust the system parameters and run the simulation to estimate solar power generation and daily energy output. SunScale uses a simplified photovoltaic performance model to help users understand the impact of irradiance, system losses, and inverter efficiency.
+        </div>
+
+        <div class="vision-box">
+          SunScale reflects the importance of clean energy, sustainability, and innovation, supporting the direction of Saudi Vision 2030 toward a more sustainable future.
         </div>
 
         <div class="footer-note">
-          Micro Digital Twin Validation Prototype – Developed by Aseel Alamri for SIRAJ concept demo.
+          Empowering Solar Awareness Through Technology.
         </div>
       </div>
     </div>
@@ -398,7 +446,6 @@
     const edaySub = document.getElementById("edaySub");
     const explainText = document.getElementById("explainText");
 
-    // Update labels for sliders
     lossesInput.addEventListener("input", () => {
       lossesLabel.textContent = `${lossesInput.value} %`;
     });
@@ -407,7 +454,6 @@
       invEffLabel.textContent = `${invEffInput.value} %`;
     });
 
-    // Update sun hours when location changes
     locationSelect.addEventListener("change", () => {
       const opt = locationSelect.options[locationSelect.selectedIndex];
       const sunH = parseFloat(opt.dataset.sunhours || "5.0");
@@ -432,34 +478,27 @@
         return;
       }
 
-      const Gref = 1000.0; // STC reference irradiance
+      const Gref = 1000.0;
       const lossFrac = lossPercent / 100.0;
       const invEff = invEffPercent / 100.0;
 
-      // DC power scaled with irradiance
       const Pdc_raw = N * Pwp * (G / Gref);
       const Pdc_net = Pdc_raw * (1.0 - lossFrac);
       const Pac = Pdc_net * invEff;
-
-      // Daily energy in kWh
       const Eday = (Pac / 1000.0) * Hsun;
 
-      // Populate UI
       pdcRawEl.textContent = formatNumber(Pdc_raw, 1);
       pdcNetEl.textContent = formatNumber(Pdc_net, 1);
       pacEl.textContent = formatNumber(Pac, 1);
       edayEl.textContent = formatNumber(Eday, 2);
 
-      pdcRawSub.textContent = `N × Pwp × (G / 1000). With N = ${N}, Pwp = ${Pwp} W, G = ${G} W/m².`;
-      pdcNetSub.textContent = `After total system losses of ${lossPercent}%.`;
-      pacSub.textContent = `After inverter efficiency of ${invEffPercent}%.`;
-      edaySub.textContent = `Using ${Hsun.toFixed(1)} effective sun hours for the selected site.`;
+      pdcRawSub.textContent = "Estimated power generated by the solar panels before system losses.";
+pdcNetSub.textContent = "Expected output after accounting for system losses and operating conditions.";
+pacSub.textContent = "Estimated usable AC power delivered by the inverter.";
+edaySub.textContent = "Projected daily energy generation based on local solar conditions.";
 
       explainText.textContent =
-        "This micro-simulation shows the same logic SIRAJ will apply at scale: " +
-        "starting from plane-of-array irradiance (G), we scale the STC power of each module, " +
-        "apply aggregate system losses (soiling, wiring, mismatch), then model inverter efficiency " +
-        "to obtain AC output and an approximate daily energy yield.";
+        "SunScale estimates solar system performance by combining panel specifications, solar irradiance, system losses, and inverter efficiency. The simulation provides expected DC power, AC output, and daily energy generation to support awareness of renewable energy technologies and sustainable development initiatives.";
     });
   </script>
 </body>
